@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.apache.jena</groupId>
+  <artifactId>txtdb-codec</artifactId>
+  <packaging>jar</packaging>
+  <name>txTDB-codec</name>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <description>Codecs for compressing TDB blocks for txTDB Journal</description>
+  <url>https://cwiki.apache.org/confluence/display/JENA/TxTDB-design</url>
+
+  <properties>
+    <snappy.version>1.0.1-rc4</snappy.version>
+    <lzf.version>0.7.0</lzf.version>
+    <tdb.version>0.8.10-SNAPSHOT</tdb.version>
+    <slf4j.version>1.6.1</slf4j.version>
+    <junit.version>4.8.2</junit.version>
+    <jdk.version>1.6</jdk.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.xerial.snappy</groupId>
+      <artifactId>snappy-java</artifactId>
+      <version>${snappy.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.ning</groupId>
+      <artifactId>compress-lzf</artifactId>
+      <version>${lzf.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>tdb</artifactId>
+      <version>${tdb.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>repo-jena-dev</id>
+      <url>http://openjena.org/repo-dev</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+          <!-- Exclude the implementation -->
+          <includePackageNames>com.hp.hpl.jena.larq</includePackageNames>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+         <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
+         <downloadSources>true</downloadSources>
+         <downloadJavadocs>false</downloadJavadocs>
+         <useProjectReferences>false</useProjectReferences>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <reporting>
+
+    <outputDirectory>${project.build.directory}/site</outputDirectory>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <configuration>
+          <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <configuration>
+          <instrumentation>
+            <ignores>
+              <ignore>org.slf4j.*</ignore>
+            </ignores>
+          </instrumentation>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <linkXref>true</linkXref>
+          <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>${jdk.version}</targetJdk>
+          <failOnViolation>false</failOnViolation>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </reporting>
+
+</project>
