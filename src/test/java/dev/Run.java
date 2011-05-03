@@ -37,6 +37,7 @@ public class Run {
 			new LZFCodec(),
 			new NullCopyCodec(),
 			new DeflateCodec(0),
+			new DeflateCodec(1),
 			new DeflateCodec(2),
 			new DeflateCodec(6),
 			new DeflateCodec(9),
@@ -67,8 +68,17 @@ public class Run {
 			i++; 
 		}
 		long stop = System.currentTimeMillis();
-		System.out.printf("%s: blocks = %d, bytes uncompressed = %d, compressed = %d (%.0f%%), elapsed time = %d ms\n", 
-				codec.getName(), i, bytes_total_uncompressed, bytes_total_compressed, bytes_total_compressed * 1.0 / bytes_total_uncompressed * 100, (stop-start));		
+		System.out.printf("%12s: %d blocks (%d bytes each), uncompressed = %12d, compressed = %12d (%4.0f%%), elapsed time %5d ms = %5.4f ms per block = %5.0f MB/sec\n",
+				codec.getName(), 
+				i, 
+				SystemTDB.BlockSize, 
+				bytes_total_uncompressed, 
+				bytes_total_compressed,
+				bytes_total_compressed * 1.0 / bytes_total_uncompressed * 100, 
+				(stop-start),
+				(stop-start) * 1.0 / i,
+				( bytes_total_uncompressed + bytes_total_compressed ) * 1.0 / ( (stop-start) * 1.0 / 1000 ) / ( 1024 * 1024 )
+		);		
 	}
 	
 }
