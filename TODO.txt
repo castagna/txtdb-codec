@@ -1,0 +1,7 @@
+TODO
+----
+
+ - Use reflection to remove dependency from LZF and Snappy and use them if available in the classpath?
+ - Add JournalEntryStreamFile (Direct and Mapped)... see BlockMgr?
+ - Add compression to JournalEntryStreamFile and compare with/without compression.
+ - ...
